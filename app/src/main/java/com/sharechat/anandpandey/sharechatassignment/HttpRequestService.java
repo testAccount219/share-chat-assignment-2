@@ -1,6 +1,6 @@
 package com.sharechat.anandpandey.sharechatassignment;
 
-import com.sharechat.anandpandey.sharechatassignment.HomeActivity.HttpRequestServiceReciever;
+import com.sharechat.anandpandey.sharechatassignment.DataFetchService.HttpRequestServiceReciever;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -9,7 +9,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.entity.StringEntity;

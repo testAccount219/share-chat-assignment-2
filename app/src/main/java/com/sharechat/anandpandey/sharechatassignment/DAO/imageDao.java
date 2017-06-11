@@ -59,11 +59,11 @@ public class imageDao {
                 + " = " + id, null);
     }
 
-    public List<image> getAllImages() {
+    public List<image> getAllImages(int Offset) {
         List<image> images = new ArrayList<image>();
 
         Cursor cursor = database.query(MySQLiteHelper.IMAGES,
-                allColumns, null, null, null, null, null);
+                allColumns, MySQLiteHelper.COLUMN_ID + " > " + Offset, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
