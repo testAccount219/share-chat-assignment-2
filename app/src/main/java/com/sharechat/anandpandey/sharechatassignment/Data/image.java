@@ -7,11 +7,22 @@ package com.sharechat.anandpandey.sharechatassignment.Data;
 public class image {
     private long id;
 
-    public image(long id, String authorName, String url, long postedOn) {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private String type;
+
+    public image(long id, String authorName, String url, long postedOn, String type) {
         this.id = id;
         this.authorName = authorName;
         this.url = url;
         this.postedOn = postedOn;
+        this.type = type;
     }
     public image() {
     }

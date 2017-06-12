@@ -21,7 +21,7 @@ public class imageDao {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = { MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.AUTHOR_NAME, MySQLiteHelper.URL, MySQLiteHelper.POSTED_ON };
+            MySQLiteHelper.AUTHOR_NAME, MySQLiteHelper.URL, MySQLiteHelper.POSTED_ON, MySQLiteHelper.TYPE };
 
     public imageDao(Context context) {
         dbHelper = new MySQLiteHelper(context);
@@ -35,21 +35,20 @@ public class imageDao {
         dbHelper.close();
     }
 
+    public void createTable() {
+        dbHelper.createTable(database);
+    }
+
     public image createImage(image Image) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_ID, Image.getId());
         values.put(MySQLiteHelper.AUTHOR_NAME, Image.getAuthorName());
         values.put(MySQLiteHelper.URL, Image.getUrl());
         values.put(MySQLiteHelper.POSTED_ON, Image.getPostedOn());
+        values.put(MySQLiteHelper.TYPE, Image.getType());
 
         long insertId = database.insert(MySQLiteHelper.IMAGES, null, values);
-        Cursor cursor = database.query(MySQLiteHelper.IMAGES,
-                allColumns, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
-                null, null, null);
-        cursor.moveToFirst();
-        image newImage = cursorToImage(cursor);
-        cursor.close();
-        return newImage;
+        return Image;
     }
 
     public void deleteImage(image Image) {
@@ -82,6 +81,7 @@ public class imageDao {
         Image.setAuthorName(cursor.getString(1));
         Image.setUrl(cursor.getString(2));
         Image.setPostedOn(cursor.getInt(3));
+        Image.setType(cursor.getString(4));
         return Image;
     }
 }

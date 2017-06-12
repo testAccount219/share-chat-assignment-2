@@ -1,6 +1,5 @@
 package com.sharechat.anandpandey.sharechatassignment;
 
-import com.sharechat.anandpandey.sharechatassignment.DataFetchService.HttpRequestServiceReciever;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -79,7 +78,6 @@ public class HttpRequestService extends IntentService {
         }
 
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(HttpRequestServiceReciever.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         broadcastIntent.putExtra(RESPONSE_STRING, responseString);
         broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);

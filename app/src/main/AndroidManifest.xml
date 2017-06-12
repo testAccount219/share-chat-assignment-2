@@ -17,10 +17,15 @@
             android:name=".HttpRequestService"
             android:label="HttpRequestService" >
         </service>
+
         <service
             android:name=".DataFetchService"
             android:label="DataFetchService" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </service>
+
         <activity android:name=".HomeActivity" android:label="@string/trending_bar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

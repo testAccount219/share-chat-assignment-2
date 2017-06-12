@@ -2,9 +2,11 @@ package com.sharechat.anandpandey.sharechatassignment;
 
 import com.sharechat.anandpandey.sharechatassignment.ImageLoadTask;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,24 +22,39 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ItemHolder> {
 
-    private List<JSONObject> itemsName;
+    public HashMap<Integer, JSONObject> itemsName;
+    private int iterator = 0;
     private OnItemClickListener onItemClickListener;
     private LayoutInflater layoutInflater;
 
     public RecyclerViewAdapter(Context context){
         layoutInflater = LayoutInflater.from(context);
-        itemsName = new ArrayList<JSONObject>();
+        itemsName = new HashMap<>();
+        setHasStableIds(true);
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 
     @Override
     public RecyclerViewAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = layoutInflater.inflate(R.layout.layout_item, parent, false);
-        return new ItemHolder(itemView, this);
+        ItemHolder itemHolder = new ItemHolder(itemView, this);
+        return itemHolder;
     }
 
     @Override
@@ -63,8 +80,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public void add(int location, JSONObject data){
-        itemsName.add(location, data);
-        notifyItemInserted(location);
+        try {
+            itemsName.put(location, data);
+            notifyItemInserted(location);
+        } catch (Exception e) {
+            Log.v("SSD", e.toString());
+        }
     }
 
     public void remove(int location){
@@ -93,35 +114,48 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Button button = (Button) linearLayout.findViewById(R.id.load_more);
                 LinearLayout imageView = (LinearLayout) linearLayout.findViewById(R.id.image_view);
                 if (jsonData.get("type").equals("profile")) {
-                    ((ViewManager) button.getParent()).removeView(button);
-                    ((ViewManager) imageView.getParent()).removeView(imageView);
+                    if(button != null) {
+                        ((ViewManager) button.getParent()).removeView(button);
+                    }
+                    if(imageView != null) {
+                        ((ViewManager) imageView.getParent()).removeView(imageView);
+                    }
                     TextView textView = (TextView) ((LinearLayout)userView.findViewById(R.id.user_details)).findViewById(R.id.profile_name);
-                    textView.setText("Author Name : " + jsonData.get("author_name").toString());
+                    textView.setText("Author Name : " + jsonData.get("authorName").toString());
                     TextView contactTextView = (TextView) ((LinearLayout)userView.findViewById(R.id.user_details)).findViewById(R.id.author_contact);
-                    contactTextView.setText("Author Contact : " + jsonData.get("author_contact").toString());
+                    contactTextView.setText("Author Contact : " + jsonData.get("authorContact").toString());
                     TextView dobTextView = (TextView) userView.findViewById(R.id.user_details).findViewById(R.id.author_dob);
-                    dobTextView.setText("Author Dob : " + jsonData.get("author_dob").toString());
+                    dobTextView.setText("Author Dob : " + jsonData.get("authorDob").toString());
                     TextView statusTextView = (TextView) userView.findViewById(R.id.user_details).findViewById(R.id.author_status);
-                    statusTextView.setText("Author Status : " + jsonData.get("author_status").toString());
+                    statusTextView.setText("Author Status : " + jsonData.get("authorStatus").toString());
                     TextView genderTextView = (TextView) userView.findViewById(R.id.user_details).findViewById(R.id.author_gender);
-                    genderTextView.setText("Author Gender : " + jsonData.get("author_gender").toString());
-                    new ImageLoadTask(jsonData.get("profile_url").toString(), (ImageView) userView.findViewById(R.id.profile_image), "profile_image").execute();
+                    genderTextView.setText("Author Gender : " + jsonData.get("authorGender").toString());
+                    new ImageLoadTask(jsonData.get("profileUrl").toString(), (ImageView) userView.findViewById(R.id.profile_image), "profile_image").execute();
                 } else if (jsonData.get("type").equals("image")) {
                     TextView textView = (TextView) imageView.findViewById(R.id.image_author_name);
-                    textView.setText("Author Name : " + jsonData.get("author_name").toString());
+                    textView.setText("Author Name : " + jsonData.get("authorName").toString());
                     SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                     TextView dateView = (TextView) imageView.findViewById(R.id.image_created_time);
-                    dateView.setText(format1.format((Long) jsonData.get("postedOn")).toString());
+                    dateView.setText(format1.format((Integer) jsonData.get("postedOn")).toString());
                     int width = imageView.getWidth();
                     new ImageLoadTask(jsonData.get("url").toString(), (ImageView) imageView.findViewById(R.id.image), "image").execute();
-                    ((ViewManager) button.getParent()).removeView(button);
-                    ((ViewManager) userView.getParent()).removeView(userView);
+                    if(button != null) {
+                        ((ViewManager) button.getParent()).removeView(button);
+                    }
+                    if(userView != null) {
+                        ((ViewManager) userView.getParent()).removeView(userView);
+                    }
                 } else {
                     button.setText("Load More");
-                    ((ViewManager) userView.getParent()).removeView(userView);
-                    ((ViewManager) imageView.getParent()).removeView(imageView);
+                    if(userView != null) {
+                        ((ViewManager) userView.getParent()).removeView(userView);
+                    }
+                    if(imageView != null) {
+                        ((ViewManager) imageView.getParent()).removeView(imageView);
+                    }
                 }
             } catch (Exception e) {
+                Log.v("Error", e.toString());
             }
         }
 
